@@ -11,7 +11,7 @@ create table countries (
 	country_id int generated always as identity,
 	short_name varchar not null,
 	full_name varchar not null,
-	region varchar,
+	region varchar not null,
 	
 	constraint country_id_pk primary key(country_id),
 	constraint region_check check(
@@ -39,7 +39,7 @@ create table players (
 	first_name varchar not null,
 	last_name varchar not null,
 	born_date date not null,
-	country_id int,
+	country_id int not null,
 	
 	constraint player_id_pk primary key(player_id),
 	constraint country_id_fk foreign key(
@@ -49,7 +49,7 @@ create table players (
 
 create table roles (
 	role_id int generated always as identity,
-	name varchar,
+	name varchar not null,
 	
 	constraint pk_role_id primary key(role_id)
 );
@@ -94,12 +94,12 @@ create table command_players(
 
 create table games(
 	game_id int generated always as identity,
-	command_a_id int,
-	command_b_id int,
-	day date,
-	time time,
-	location varchar,
-	level varchar,
+	command_a_id int not null,
+	command_b_id int not null,
+	day date not null,
+	time time not null,
+	location varchar not null,
+	level varchar not null,
 	
 	constraint pk_game_commands_ab primary key(
 		game_id
@@ -109,13 +109,16 @@ create table games(
 	) references commands(command_id),
 	constraint fk_command_b_id foreign key(
 		command_b_id
-	) references commands(command_id)
+	) references commands(command_id),
+	constraint check_commands check(
+		command_a_id != command_b_id		
+	)
 );
 
 create table game_results(
 	result_id int generated always as identity,
-	game_id int,
-	command_id int,
+	game_id int not null,
+	command_id int not null,
 	goals_score int,
 	penalty_score int,
 	
